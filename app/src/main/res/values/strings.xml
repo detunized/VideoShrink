@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideoShrink</string>
+    <string name="read_permission_denied">It\'s kinda hard to convert videos without access to the media files ;-(</string>
 </resources>

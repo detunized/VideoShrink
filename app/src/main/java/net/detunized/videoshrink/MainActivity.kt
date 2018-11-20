@@ -15,7 +15,7 @@ import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import java.io.File
 import java.lang.Exception
 import android.provider.MediaStore
-
+import android.widget.Toast
 
 @TargetApi(Build.VERSION_CODES.M)
 class MainActivity : Activity() {
@@ -24,26 +24,42 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        requestNeededPermissions()
-        processSendIntent()
+        if (isSendIntent())
+            requestNeededPermissionsAndProcessSendIntent()
+    }
+
+    private fun requestNeededPermissionsAndProcessSendIntent() {
+        if (needReadPermission())
+            requestReadPermission() // This should call processSendIntent on success
+        else
+            processSendIntent()
+    }
+
+    private fun needReadPermission(): Boolean {
+        return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestReadPermission() {
+        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_STORAGE_CODE)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        Log.d(TAG, "onRequestPermissionsResult: $requestCode ${permissions[0]} ${grantResults[0]}")
+        val granted = requestCode == READ_EXTERNAL_STORAGE_CODE
+                && permissions.size == 1
+                && permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE
+                && grantResults.size == 1
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+        if (granted)
+            processSendIntent()
+        else
+            Toast.makeText(applicationContext, getString(R.string.read_permission_denied), Toast.LENGTH_LONG).show()
     }
 
-    private fun requestNeededPermissions() {
-        requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-
-    private fun requestPermission(perm: String) {
-        if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(perm), READ_EXTERNAL_STORAGE_CODE)
-        }
-    }
+    private fun isSendIntent() = intent.action == Intent.ACTION_SEND
 
     private fun processSendIntent() {
-        if (intent.action == Intent.ACTION_SEND && intent.type.startsWith("video/")) {
+        assert(isSendIntent())
+        if (intent.type.startsWith("video/")) {
             (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let { uri ->
                 processVideo(uri)
             }
@@ -58,14 +74,14 @@ class MainActivity : Activity() {
 
     private fun processVideo(path: String) {
         val outputFile = File(getExternalFilesDir(android.os.Environment.DIRECTORY_MOVIES), "shrunk.mp4")
-        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(8000 * 1000)
+        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(5000 * 1000)
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 Log.d(TAG, "Completed")
             }
 
             override fun onTranscodeProgress(progress: Double) {
-                Log.d(TAG, "Progress: $progress")
+                //Log.d(TAG, "Progress: $progress")
             }
 
             override fun onTranscodeCanceled() {
