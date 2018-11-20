@@ -9,15 +9,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 import net.ypresto.androidtranscoder.MediaTranscoder
 import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import java.io.File
-import java.lang.Exception
-import android.provider.MediaStore
-import android.widget.ProgressBar
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
 
 @TargetApi(Build.VERSION_CODES.M)
 class MainActivity : Activity() {
