@@ -15,7 +15,9 @@ import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import java.io.File
 import java.lang.Exception
 import android.provider.MediaStore
+import android.widget.ProgressBar
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 
 @TargetApi(Build.VERSION_CODES.M)
 class MainActivity : Activity() {
@@ -77,11 +79,11 @@ class MainActivity : Activity() {
         val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(5000 * 1000)
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
-                Log.d(TAG, "Completed")
+                progressBar.progress = progressBar.max
             }
 
             override fun onTranscodeProgress(progress: Double) {
-                //Log.d(TAG, "Progress: $progress")
+                progressBar.progress = Math.round(progressBar.max * progress).toInt()
             }
 
             override fun onTranscodeCanceled() {
