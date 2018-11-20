@@ -80,6 +80,7 @@ class MainActivity : Activity() {
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
+                shareVideo(outputFile)
             }
 
             override fun onTranscodeProgress(progress: Double) {
@@ -108,6 +109,15 @@ class MainActivity : Activity() {
             else
                 null
         }
+    }
+
+    private fun shareVideo(file: File) {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+            type = "video/avc"
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share video"))
     }
 
     companion object {
