@@ -85,7 +85,7 @@ class MainActivity : Activity() {
 
     private fun processVideo(path: String) {
         val outputFile = File(getExternalFilesDir(android.os.Environment.DIRECTORY_MOVIES), "shrunk.mp4")
-        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(5000 * 1000)
+        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(4000 * 1000)
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
