@@ -32,6 +32,10 @@ class MainActivity : Activity() {
     }
 
     private fun allowPrivateFileAccessByOtherApps() {
+        // It's hacky, but allows to keep the default settings minus the uri exposure thing.
+        // I tried to implement the proposed solution from here https://stackoverflow.com/a/50265329/362938
+        // using the FileProvider approach. It works and doesn't require this hack. The problem is
+        // that the video gets shared as a file attachment on Telegram instead of a playable video.
         StrictMode::class.java.getMethod("disableDeathOnFileUriExposure").invoke(null)
     }
 
