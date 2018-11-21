@@ -110,12 +110,21 @@ class MainActivity : Activity() {
     }
 
     private fun shareVideo(file: File) {
-        val shareIntent: Intent = Intent().apply {
+        startActivity(Intent.createChooser(makeSendIntent(file), "Share video"))
+    }
+
+    private fun shareVideoWithTelegram(file: File) {
+        startActivity(makeSendIntent(file).apply {
+            setClassName("org.telegram.messenger", "org.telegram.ui.LaunchActivity")
+        })
+    }
+
+    private fun makeSendIntent(file: File): Intent {
+        return Intent().apply {
             action = Intent.ACTION_SEND
+            type = "video/mp4"
             putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
-            type = "video/avc"
         }
-        startActivity(Intent.createChooser(shareIntent, "Share video"))
     }
 
     companion object {
