@@ -63,7 +63,7 @@ class MainActivity : Activity() {
         if (granted)
             processSendIntent()
         else
-            Toast.makeText(applicationContext, getString(R.string.read_permission_denied), Toast.LENGTH_LONG).show()
+            showToastAndQuit(R.string.read_permission_denied)
     }
 
     private fun isSendIntent() = intent.action == Intent.ACTION_SEND
@@ -90,6 +90,7 @@ class MainActivity : Activity() {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
                 shareVideoWithTelegram(outputFile)
+                finish()
             }
 
             override fun onTranscodeProgress(progress: Double) {
@@ -97,11 +98,11 @@ class MainActivity : Activity() {
             }
 
             override fun onTranscodeCanceled() {
-                Log.d(TAG, "Canceled")
+                showToastAndQuit(R.string.transcode_canceled)
             }
 
             override fun onTranscodeFailed(exception: Exception?) {
-                Log.d(TAG, "Failed")
+                showToastAndQuit(R.string.transcode_failed)
             }
         }
 
@@ -136,6 +137,11 @@ class MainActivity : Activity() {
             type = "video/mp4"
             putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
         }
+    }
+
+    private fun showToastAndQuit(id: Int) {
+        Toast.makeText(applicationContext, getString(id), Toast.LENGTH_LONG).show()
+        finish()
     }
 
     companion object {
