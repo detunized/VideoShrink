@@ -85,7 +85,7 @@ class MainActivity : Activity() {
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
-                shareVideo(outputFile)
+                shareVideoWithTelegram(outputFile)
             }
 
             override fun onTranscodeProgress(progress: Double) {
