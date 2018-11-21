@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -24,8 +25,14 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (isSendIntent())
+        if (isSendIntent()) {
+            allowPrivateFileAccessByOtherApps()
             requestNeededPermissionsAndProcessSendIntent()
+        }
+    }
+
+    private fun allowPrivateFileAccessByOtherApps() {
+        StrictMode::class.java.getMethod("disableDeathOnFileUriExposure").invoke(null)
     }
 
     private fun requestNeededPermissionsAndProcessSendIntent() {
