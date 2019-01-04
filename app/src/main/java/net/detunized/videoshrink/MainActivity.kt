@@ -84,8 +84,10 @@ class MainActivity : Activity() {
     }
 
     private fun processVideo(path: String) {
+        Log.d(TAG, "processVideo: $path")
+
         val outputFile = File(getExternalFilesDir(android.os.Environment.DIRECTORY_MOVIES), "shrunk.mp4")
-        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(4000 * 1000)
+        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(3_000_000)
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
@@ -102,6 +104,7 @@ class MainActivity : Activity() {
             }
 
             override fun onTranscodeFailed(exception: Exception?) {
+                Log.d(TAG, "$exception")
                 showToastAndQuit(R.string.transcode_failed)
             }
         }
