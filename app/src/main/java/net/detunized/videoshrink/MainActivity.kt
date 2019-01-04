@@ -86,8 +86,10 @@ class MainActivity : Activity() {
     private fun processVideo(path: String) {
         Log.d(TAG, "processVideo: $path")
 
+        val bitrate = 3_000_000
         val outputFile = File(getExternalFilesDir(android.os.Environment.DIRECTORY_MOVIES), "shrunk.mp4")
-        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(3_000_000)
+        val preset = MediaFormatStrategyPresets.createAndroid720pStrategy(bitrate)
+
         val listener = object : MediaTranscoder.Listener {
             override fun onTranscodeCompleted() {
                 progressBar.progress = progressBar.max
@@ -111,6 +113,7 @@ class MainActivity : Activity() {
 
         Log.d(TAG, "Converting a video from '$path' to '$outputFile'")
 
+        textView.setText("${bitrate / 1000} Kbit/sec")
         MediaTranscoder.getInstance().transcodeVideo(path, outputFile.path, preset, listener)
     }
 
